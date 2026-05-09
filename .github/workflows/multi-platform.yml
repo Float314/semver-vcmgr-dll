@@ -1,0 +1,44 @@
+name: Multi-Platform Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      # Prevents one OS failure from cancelling all other builds
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: macos-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up MSVC (Windows Only)
+      if: runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Config CMake
+      # We pass the compilers from our matrix to CMake
+      run: >
+        cmake -S . -B build 
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} 
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build Library
+      run: cmake --build build --config Release

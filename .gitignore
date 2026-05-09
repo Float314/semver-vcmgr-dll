@@ -1,0 +1,13 @@
+# Just some buildfiles and all
+build/
+*.exe
+*.dll
+*.pdb
+*.ilk 
+*.pdb
+*.lib
+# dont know what ilk does lmao
+# wtf is an incremental linker file?
+
+src/temp/
+src/temp/*
