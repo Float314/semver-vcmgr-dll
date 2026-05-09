@@ -42,3 +42,17 @@ jobs:
 
     - name: Build Library
       run: cmake --build build --config Release
+
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        # This names the zip file in the UI (e.g., library-windows)
+        name: library-${{ matrix.os }}
+        # Path to the compiled files. Adjust based on your CMake output.
+        path: |
+          build/**/*.dll
+          build/**/*.so
+          build/**/*.dylib
+          build/**/*.lib
+          build/**/*.pdb
